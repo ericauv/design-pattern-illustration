@@ -1,9 +1,6 @@
-# Design Pattern Illutstrations
+# Redux with Typescript and React Hooks
 
-This project aims to illustrate common Object Oriented Programming Design Patterns in an interactive and visual manner. The following design patterns will be covered:
-
-- Observer
-- Strategy
+This project follows the following tutorial: [React-Redux Hooks with Typescript in 2020](https://codersera.com/blog/react-redux-hooks-with-typescript/) in order to become familiar with using Redux with Typescript and React Hooks.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
