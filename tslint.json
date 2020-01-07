@@ -3,6 +3,7 @@
   "extends": ["tslint-react"],
   "jsRules": {},
   "rules": {
+    "jsx-wrap-multiline": false,
     "member-access": false,
     "ordered-imports": true,
     "quotemark": false,
