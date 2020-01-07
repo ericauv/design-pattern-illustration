@@ -4,8 +4,10 @@
   "jsRules": {},
   "rules": {
     "jsx-wrap-multiline": false,
+    "jsx-no-lambda": false,
+    "jsx-no-multiline-js": false,
     "member-access": false,
-    "ordered-imports": true,
+    "ordered-imports": false,
     "quotemark": false,
     "no-console": false,
     "no-conditional-assignment": true,
