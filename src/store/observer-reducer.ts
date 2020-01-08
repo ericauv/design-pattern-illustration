@@ -42,14 +42,10 @@ export interface ISubject {
 export interface IInitialState {
   subjects: ISubject[];
   observers: IObserver[];
-  subjectCounter: number;
-  observerCounter: number;
 }
 export const initialState: IInitialState = {
   subjects: [],
-  observers: [],
-  subjectCounter: 0,
-  observerCounter: 0
+  observers: []
 };
 
 export interface IObserverPayload {
@@ -161,8 +157,7 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
       newObservers.push(new ObserverInstance());
       return {
         ...state,
-        observers: [...newObservers],
-        observerCounter: state.observerCounter + 1
+        observers: [...newObservers]
       };
     }
     case ActionType.CREATE_SUBJECT: {
