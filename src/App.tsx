@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import ReduxHooksComponent from './components/ReduxHooksComponent';
+import ObserverPattern from './components/ObserverPattern';
 const App: React.FC = () => {
   return (
     <div className="App">
-      <ReduxHooksComponent />
+      <ObserverPattern />
     </div>
   );
 };

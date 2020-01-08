@@ -16,7 +16,7 @@ interface IStateProps {
   records: IRecord[];
 }
 
-const ReduxHooksComponent: React.FC<IProps> = () => {
+const ObserverPattern: React.FC<IProps> = () => {
   // subscribes to changes in values in store
   const { name, address, records } = useSelector<IInitialState, IStateProps>(
     (state: IInitialState) => {
@@ -74,4 +74,4 @@ const ReduxHooksComponent: React.FC<IProps> = () => {
   );
 };
 
-export default ReduxHooksComponent;
+export default ObserverPattern;
