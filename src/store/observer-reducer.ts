@@ -52,10 +52,14 @@ class Subject implements ISubject {
 export interface IInitialState {
   subjects: IDictionary<ISubject>;
   observers: IDictionary<IObserver>;
+  selectedSubjectId: string;
+  selectedObserverId: string;
 }
 export const initialState: IInitialState = {
   subjects: {},
-  observers: {}
+  observers: {},
+  selectedSubjectId: '',
+  selectedObserverId: ''
 };
 
 export interface IObserverPayload {
@@ -75,7 +79,11 @@ export enum ActionType {
   CREATE_OBSERVER,
   CREATE_SUBJECT,
   DELETE_OBSERVER,
-  DELETE_SUBJECT
+  DELETE_SUBJECT,
+  SELECT_OBSERVER,
+  SELECT_SUBJECT,
+  DESELECT_OBSERVER,
+  DESELECT_SUBJECT
 }
 
 function copySubjectFromState(
@@ -187,6 +195,36 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
         subjects: { ...updatedSubjects }
       };
     }
+
+    case ActionType.SELECT_OBSERVER: {
+      const { observerId } = action.payload;
+      const observerToSelect = copyObserverFromState(state, observerId);
+
+      return {
+        ...state,
+        selectedObserverId: observerToSelect.id
+      };
+    }
+    case ActionType.SELECT_SUBJECT: {
+      const { subjectId } = action.payload;
+      const subjectToSelect = copySubjectFromState(state, subjectId);
+      return {
+        ...state,
+        selectedSubjectId: subjectToSelect.id
+      };
+    }
+    case ActionType.DESELECT_OBSERVER: {
+      return {
+        ...state,
+        selectedObserverId: ''
+      };
+    }
+    case ActionType.DESELECT_SUBJECT: {
+      return {
+        ...state,
+        selectedSubjectId: ''
+      };
+    }
     default:
       return state;
   }
@@ -215,4 +253,20 @@ export const DELETE_OBSERVER = (observerId: string) => ({
 export const DELETE_SUBJECT = (subjectId: string) => ({
   type: ActionType.DELETE_SUBJECT,
   payload: { subjectId }
+});
+export const SELECT_OBSERVER = (observerId: string) => ({
+  type: ActionType.SELECT_OBSERVER,
+  payload: { observerId }
+});
+export const SELECT_SUBJECT = (subjectId: string) => ({
+  type: ActionType.SELECT_SUBJECT,
+  payload: { subjectId }
+});
+export const DESELECT_OBSERVER = () => ({
+  type: ActionType.DESELECT_OBSERVER,
+  payload: {}
+});
+export const DESELECT_SUBJECT = () => ({
+  type: ActionType.DESELECT_SUBJECT,
+  payload: {}
 });
