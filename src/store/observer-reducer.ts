@@ -42,7 +42,7 @@ class Subject implements ISubject {
     this.observers = {};
   }
   notifyObservers() {
-    for (const observer of Object.values(this.observers) {
+    for (const observer of Object.values(this.observers)) {
       observer.notify();
     }
   }
@@ -78,56 +78,66 @@ export enum ActionType {
   DELETE_SUBJECT
 }
 
+function copySubjectFromState(
+  state: IInitialState,
+  subjectId: string
+): ISubject {
+  // returns a copy of the subject with passed subjectId if it exists in state
+  if (!state.subjects.hasOwnProperty(subjectId)) {
+    throw new Error(`Subject with id: ${subjectId} does not exist in state.`);
+  }
+  return { ...state.subjects[subjectId] };
+}
+function copyObserverFromState(
+  state: IInitialState,
+  observerId: string
+): IObserver {
+  if (!state.observers.hasOwnProperty(observerId)) {
+    throw new Error(`Observer with id: ${observerId} does not exist in state.`);
+  }
+  return { ...state.observers[observerId] };
+}
+function unRegisterObserverFromAllSubjects(
+  subjects: IDictionary<ISubject>,
+  observerId: string
+): IDictionary<ISubject> {
+  const updatedSubjects = { ...subjects };
+  for (const subject of Object.values(updatedSubjects)) {
+    if (subject.observers.hasOwnProperty(observerId)) {
+      delete subject.observers[observerId];
+    }
+  }
+  return updatedSubjects;
+}
 // Reducers
 export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
   state = initialState,
   action
 ) => {
-
-  function unRegisterObserverFromAllSubjects(
-    subjects: IDictionary<ISubject>,
-    observerId: string
-  ): IDictionary<ISubject> {
-    const updatedSubjects = { ...subjects };
-    for (const subject of Object.values(updatedSubjects)) {
-      if (subject.observers.hasOwnProperty(observerId)) {
-        delete subject.observers[observerId];
-      }
-    }
-    return updatedSubjects;
-  }
-
-  function copySubjectFromState(subjectId:string):ISubject {
-    // returns a copy of the subject with passed subjectId if it exists in state
-    if(!state.subjects.hasOwnProperty(subjectId)){
-      throw new Error(`Subject with id: ${subjectId} does not exist in state.`);
-    }
-    return {...state.subjects[subjectId]}
-  }
-  function copyObserverFromState(observerId:string):IObserver {
-    if(!state.observers.hasOwnProperty(observerId)){
-      throw new Error(`Observer with id: ${observerId} does not exist in state.`);
-    }
-    return {...state.observers[observerId]}
-  }
-
-  const {subjectId, observerId} = action.payload;
   switch (action.type) {
     case ActionType.REGISTER_OBSERVER: {
-      const updatedSubject = copySubjectFromState(subjectId);
-      const observerToAdd = copyObserverFromState(observerId);
+      const { subjectId, observerId } = action.payload;
+      const updatedSubject = copySubjectFromState(state, subjectId);
+      const observerToAdd = copyObserverFromState(state, observerId);
       updatedSubject.observers[observerToAdd.id] = observerToAdd;
-      const updatedSubjects = {...state.subjects, [updatedSubject.id]: updatedSubject};
+      const updatedSubjects = {
+        ...state.subjects,
+        [updatedSubject.id]: updatedSubject
+      };
       return {
         ...state,
         subjects: updatedSubjects
       };
     }
     case ActionType.UNREGISTER_OBSERVER: {
-      const updatedSubject = copySubjectFromState(subjectId);
-      const observerToUnregister = copyObserverFromState(observerId);
-      delete updatedSubject.observers[observerToUnregister.id]
-      const updatedSubjects = {...state.subjects, [updatedSubject.id]: updatedSubject};
+      const { subjectId, observerId } = action.payload;
+      const updatedSubject = copySubjectFromState(state, subjectId);
+      const observerToUnregister = copyObserverFromState(state, observerId);
+      delete updatedSubject.observers[observerToUnregister.id];
+      const updatedSubjects = {
+        ...state.subjects,
+        [updatedSubject.id]: updatedSubject
+      };
       return {
         ...state,
         subjects: updatedSubjects
@@ -135,44 +145,46 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
     }
     case ActionType.CREATE_OBSERVER: {
       const newObserver = new Observer();
-      const updatedObservers = {...state.observers};
+      const updatedObservers = { ...state.observers };
       updatedObservers[newObserver.id] = newObserver;
       return {
         ...state,
-        observers: {...updatedObservers}
+        observers: { ...updatedObservers }
       };
     }
     case ActionType.CREATE_SUBJECT: {
       const newSubject = new Subject();
-      const updatedSubjects = {...state.subjects};
+      const updatedSubjects = { ...state.subjects };
       updatedSubjects[newSubject.id] = newSubject;
       return {
         ...state,
-        subjects: {...updatedSubjects}
+        subjects: { ...updatedSubjects }
       };
     }
     case ActionType.DELETE_OBSERVER: {
+      const { observerId } = action.payload;
       // Remove observer from all subjects so that subject doesn't try to notify a non-existant observer
       const updatedSubjects = unRegisterObserverFromAllSubjects(
-        {...state.subjects},
+        { ...state.subjects },
         action.payload.observerId
       );
-      const updatedObservers = {...state.observers};
-      const observerToDelete = copyObserverFromState(observerId);
+      const updatedObservers = { ...state.observers };
+      const observerToDelete = copyObserverFromState(state, observerId);
       delete updatedObservers[observerToDelete.id];
       return {
         ...state,
-        observers: {...updatedObservers},
-        subjects: {...updatedSubjects}
+        observers: { ...updatedObservers },
+        subjects: { ...updatedSubjects }
       };
     }
     case ActionType.DELETE_SUBJECT: {
-      const updatedSubjects = {...state.subjects};
-      const subjectToDelete = copySubjectFromState(subjectId);
-      delete updatedSubjects[subjectToDelete.id]
+      const { subjectId } = action.payload;
+      const updatedSubjects = { ...state.subjects };
+      const subjectToDelete = copySubjectFromState(state, subjectId);
+      delete updatedSubjects[subjectToDelete.id];
       return {
         ...state,
-        subjects: {...updatedSubjects}
+        subjects: { ...updatedSubjects }
       };
     }
     default:
@@ -184,10 +196,7 @@ export const REGISTER_OBSERVER = (subjectId: string, observerId: string) => ({
   type: ActionType.REGISTER_OBSERVER,
   payload: { subjectId, observerId }
 });
-export const UNREGISTER_OBSERVER = (
-  subjectId: string,
-  observerId: string
-) => ({
+export const UNREGISTER_OBSERVER = (subjectId: string, observerId: string) => ({
   type: ActionType.UNREGISTER_OBSERVER,
   payload: { subjectId, observerId }
 });
