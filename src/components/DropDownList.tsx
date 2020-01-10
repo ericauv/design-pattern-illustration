@@ -1,28 +1,32 @@
-import React, { MouseEvent } from 'react';
-import styled from 'styled-components';
+import React, { MouseEvent, useState } from 'react';
+import styled, { StyledComponent } from 'styled-components';
 
-interface IListItem {
-  id: string;
-}
 interface IDropDownListProps {
-  list: IListItem[];
-  onMouseOver(item: IListItem): void;
-  onClick(item: IListItem): void;
-  onRightClick(item: IListItem): void;
+  items: string[];
+  onMouseOver(id: string): void;
+  onClick(id: string): void;
+  top?: string;
+  left?: string;
 }
 
-const List = styled.ul`
+interface IListProps {
+  top?: string;
+  left?: string;
+}
+
+const ListContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+const List = styled.ul<IListProps>`
   padding: 0;
   margin: 0;
-  position: absolute;
-  top: 100%;
-  left: 0;
   z-index: 2;
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 30%;
-  background-color: grey;
 `;
 
 const ListItem = styled.li`
@@ -33,30 +37,35 @@ const ListItem = styled.li`
   }
 `;
 const DropDownList: React.FC<IDropDownListProps> = props => {
-  const { list, onMouseOver, onClick, onRightClick } = props;
+  const { items, onMouseOver, onClick, top, left } = props;
+  const [show, setShow] = useState(false);
+
   return (
-    <List>
-      {list.map((listItem, index) => {
-        return (
-          <ListItem
-            key={`${listItem.id}-list-item-${index}`}
-            className="list-item"
-            onMouseOver={() => onMouseOver(listItem)}
-            onClick={(e: MouseEvent) => {
-              // stop event from bubbling to Subject
-              e.stopPropagation();
-              onClick(listItem);
-            }}
-            onContextMenu={(e: MouseEvent) => {
-              e.preventDefault();
-              onRightClick(listItem);
-            }}
-          >
-            {listItem.id}
-          </ListItem>
-        );
-      })}
-    </List>
+    <ListContainer
+      onMouseOver={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      <div>{props.children}</div>
+      <List top={top} left={left}>
+        {show &&
+          items.map((item, index) => {
+            return (
+              <ListItem
+                key={`${item}-list-item-${index}`}
+                className="list-item"
+                onMouseOver={() => onMouseOver(item)}
+                onClick={(e: MouseEvent) => {
+                  // stop event from bubbling to Subject
+                  e.stopPropagation();
+                  onClick(item);
+                }}
+              >
+                {item}
+              </ListItem>
+            );
+          })}
+      </List>
+    </ListContainer>
   );
 };
 

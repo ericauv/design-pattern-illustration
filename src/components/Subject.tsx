@@ -7,13 +7,9 @@ import {
   SubjectClass,
   IInitialState,
   SELECT_SUBJECT,
-  SELECT_OBSERVER,
-  DESELECT_OBSERVER,
-  REGISTER_OBSERVER,
-  UNREGISTER_OBSERVER
+  DESELECT_OBSERVER
 } from '../store/observer-reducer';
-import DropDownList from './DropDownList';
-
+import SubjectOptions from './SubjectOptions';
 export interface ISubjectProps {
   id: string;
   selected: boolean;
@@ -54,33 +50,12 @@ const Subject: React.FC<ISubjectProps> = props => {
       onClick={(e: MouseEvent) => {
         // prevent the event from bubbling up, to stop the deselect from being fired in ObserverPattern
         e.stopPropagation();
-
-        SubjectClass.notifyObservers(subject.observers);
         dispatch(SELECT_SUBJECT(id));
         dispatch(DESELECT_OBSERVER());
       }}
     >
       {id}
-      {selected && Object.keys(observers).length === 0 && (
-        <DropDownList
-          list={Object.values(allObservers)}
-          onClick={observer => dispatch(REGISTER_OBSERVER(id, observer.id))}
-          onRightClick={observer =>
-            dispatch(REGISTER_OBSERVER(id, observer.id))
-          }
-          onMouseOver={observer => dispatch(SELECT_OBSERVER(observer.id))}
-        />
-      )}
-      {selected && Object.keys(observers).length > 0 && (
-        <DropDownList
-          list={Object.values(observers)}
-          onClick={observer => dispatch(UNREGISTER_OBSERVER(id, observer.id))}
-          onRightClick={observer =>
-            dispatch(REGISTER_OBSERVER(id, observer.id))
-          }
-          onMouseOver={observer => dispatch(SELECT_OBSERVER(observer.id))}
-        />
-      )}
+      {selected && <SubjectOptions subjectId={id} />}
     </SubjectContainer>
   );
 };
