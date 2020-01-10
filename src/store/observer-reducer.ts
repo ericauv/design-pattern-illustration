@@ -2,14 +2,13 @@ import { Action, Reducer } from 'redux';
 
 export interface IObserver {
   id: string;
-  notify(): void;
 }
 
 export interface IDictionary<T> {
   [key: string]: T;
 }
 
-class Observer implements IObserver {
+export class ObserverClass implements IObserver {
   id: string;
   constructor() {
     this.id = (
@@ -19,19 +18,17 @@ class Observer implements IObserver {
         .substr(2, 5)
     ).toUpperCase();
   }
-  notify() {
-    console.log(`Observer: ${this.id} -- NOTIFIED`);
+  static notify(id: string): void {
+    console.log(`Observer: ${id} -- NOTIFIED`);
   }
 }
 export interface ISubject {
   id: string;
-  observers: IDictionary<IObserver>;
-  notifyObservers(): void;
+  observers: IDictionary<ObserverClass>;
 }
-class Subject implements ISubject {
+export class SubjectClass implements ISubject {
   id: string;
-  observers: IDictionary<IObserver>;
-
+  observers: IDictionary<ObserverClass>;
   constructor() {
     this.id = (
       Date.now().toString(36) +
@@ -41,17 +38,17 @@ class Subject implements ISubject {
     ).toUpperCase();
     this.observers = {};
   }
-  notifyObservers() {
-    for (const observer of Object.values(this.observers)) {
-      observer.notify();
+  static notifyObservers(observers: IDictionary<ObserverClass>): void {
+    for (const observer of Object.values(observers)) {
+      ObserverClass.notify(observer.id);
     }
   }
 }
 
 // Initial State
 export interface IInitialState {
-  subjects: IDictionary<ISubject>;
-  observers: IDictionary<IObserver>;
+  subjects: IDictionary<SubjectClass>;
+  observers: IDictionary<ObserverClass>;
   selectedSubjectId: string;
   selectedObserverId: string;
 }
@@ -94,7 +91,9 @@ function copySubjectFromState(
   if (!state.subjects.hasOwnProperty(subjectId)) {
     throw new Error(`Subject with id: ${subjectId} does not exist in state.`);
   }
-  return { ...state.subjects[subjectId] };
+  return {
+    ...state.subjects[subjectId]
+  };
 }
 function copyObserverFromState(
   state: IInitialState,
@@ -106,9 +105,9 @@ function copyObserverFromState(
   return { ...state.observers[observerId] };
 }
 function unRegisterObserverFromAllSubjects(
-  subjects: IDictionary<ISubject>,
+  subjects: IDictionary<SubjectClass>,
   observerId: string
-): IDictionary<ISubject> {
+): IDictionary<SubjectClass> {
   const updatedSubjects = { ...subjects };
   for (const subject of Object.values(updatedSubjects)) {
     if (subject.observers.hasOwnProperty(observerId)) {
@@ -152,7 +151,7 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
       };
     }
     case ActionType.CREATE_OBSERVER: {
-      const newObserver = new Observer();
+      const newObserver = new ObserverClass();
       const updatedObservers = { ...state.observers };
       updatedObservers[newObserver.id] = newObserver;
       return {
@@ -161,7 +160,7 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
       };
     }
     case ActionType.CREATE_SUBJECT: {
-      const newSubject = new Subject();
+      const newSubject = new SubjectClass();
       const updatedSubjects = { ...state.subjects };
       updatedSubjects[newSubject.id] = newSubject;
       return {
