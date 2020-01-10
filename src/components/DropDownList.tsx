@@ -1,5 +1,5 @@
 import React, { MouseEvent, useState } from 'react';
-import styled, { StyledComponent } from 'styled-components';
+import styled from 'styled-components';
 
 interface IDropDownListProps {
   items: string[];
@@ -26,14 +26,14 @@ const List = styled.ul<IListProps>`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 30%;
 `;
 
 const ListItem = styled.li`
+  width: 100%;
   list-style: none;
-  background-color: lightgrey;
+  background-color: ${props => props.theme.white};
   &:hover {
-    background-color: blue;
+    background-color: ${props => props.theme.blue};
   }
 `;
 const DropDownList: React.FC<IDropDownListProps> = props => {

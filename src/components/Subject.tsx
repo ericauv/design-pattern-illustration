@@ -28,7 +28,7 @@ const SubjectContainer = styled.div<ISubjectContainerProps>`
   position: relative;
   width: 100%;
   height: 30px;
-  background-color: green;
+  background-color: #0b64c0;
   grid-column: 1/-1;
   border: ${props => (props.selected ? '1px solid black' : '0px')};
   border-radius: 5px;

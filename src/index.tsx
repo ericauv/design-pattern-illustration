@@ -5,10 +5,21 @@ import './index.css';
 import App from './App';
 import { store } from './store/index';
 import * as serviceWorker from './serviceWorker';
-
+import { ThemeProvider } from 'styled-components';
+const themes = {
+  default: {
+    darkBlue: '#1755B1',
+    blue: '#A5DCF4',
+    white: '#E5F4E3',
+    yellow: '#FFF07C',
+    darkYellow: '#FDE95C'
+  }
+};
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ThemeProvider theme={themes.default}>
+      <App />
+    </ThemeProvider>
   </Provider>,
   document.getElementById('root')
 );

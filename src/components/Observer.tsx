@@ -12,7 +12,7 @@ export interface IObserverProps {
 const ObserverContainer = styled.div<Partial<IObserverProps>>`
   width: 100%;
   height: 30px;
-  background-color: red;
+  background-color: ${props => props.theme.darkYellow};
   grid-column: ${props => props.gridColumnStart} /
     ${props => props.gridColumnEnd};
   border: ${props => (props.selected ? '1px solid black' : '0px')};
