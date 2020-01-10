@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
-import { SELECT_OBSERVER, DESELECT_OBSERVER } from '../store/observer-reducer';
+import { useDispatch } from 'react-redux';
+import { SELECT_OBSERVER, DESELECT_SUBJECT } from '../store/observer-reducer';
 export interface IObserverProps {
   gridColumnStart: number;
   gridColumnEnd: number;
@@ -16,6 +16,7 @@ const ObserverContainer = styled.div<Partial<IObserverProps>>`
   grid-column: ${props => props.gridColumnStart} /
     ${props => props.gridColumnEnd};
   border: ${props => (props.selected ? '1px solid black' : '0px')};
+  border-radius: 5px;
 `;
 
 const Observer: React.FC<IObserverProps> = props => {
@@ -28,7 +29,12 @@ const Observer: React.FC<IObserverProps> = props => {
       gridColumnStart={gridColumnStart}
       gridColumnEnd={gridColumnEnd}
       selected={selected}
-      onClick={() => dispatch(SELECT_OBSERVER(id))}
+      onClick={(e: MouseEvent) => {
+        // prevent clickEvent from bubbling up to ObserverPattern, which would cause DESELECT_OBSERVER to be dispatched
+        e.stopPropagation();
+        dispatch(SELECT_OBSERVER(id));
+        dispatch(DESELECT_SUBJECT());
+      }}
     >
       {id}
     </ObserverContainer>
