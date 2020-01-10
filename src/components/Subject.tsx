@@ -24,7 +24,11 @@ interface IStateProps {
   subject: SubjectClass;
 }
 
-const SubjectContainer = styled.div<Partial<ISubjectProps>>`
+interface ISubjectContainerProps {
+  selected: boolean;
+}
+
+const SubjectContainer = styled.div<ISubjectContainerProps>`
   position: relative;
   width: 100%;
   height: 30px;
