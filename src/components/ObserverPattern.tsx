@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import {
   IInitialState,
-  IObserver,
-  ISubject,
+  ObserverClass,
+  SubjectClass,
   IDictionary,
-  REGISTER_OBSERVER,
-  UNREGISTER_OBSERVER,
   CREATE_OBSERVER,
   CREATE_SUBJECT,
-  DELETE_OBSERVER,
-  DELETE_SUBJECT
+  DESELECT_SUBJECT,
+  DESELECT_OBSERVER
 } from '../store/observer-reducer';
 import Observer from './Observer';
 import Subject from './Subject';
@@ -19,8 +17,8 @@ import Subject from './Subject';
 interface IProps {}
 
 interface IStateProps {
-  observers: IDictionary<IObserver>;
-  subjects: IDictionary<ISubject>;
+  observers: IDictionary<ObserverClass>;
+  subjects: IDictionary<SubjectClass>;
   selectedObserverId: string;
   selectedSubjectId: string;
 }
@@ -60,7 +58,13 @@ const ObserverPattern: React.FC<IProps> = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div
+      style={{ height: '100%' }}
+      onClick={(e: MouseEvent) => {
+        dispatch(DESELECT_SUBJECT());
+        dispatch(DESELECT_OBSERVER());
+      }}
+    >
       <button onClick={() => dispatch(CREATE_SUBJECT())}>CREATE SUBJECT</button>
       <button onClick={() => dispatch(CREATE_OBSERVER())}>
         CREATE OBSERVER
@@ -68,6 +72,7 @@ const ObserverPattern: React.FC<IProps> = () => {
       <ObserverPatternContainer>
         {Object.values(subjects).map(subjectItem => (
           <Subject
+            observers={subjectItem.observers}
             selected={subjectItem.id === selectedSubjectId}
             id={subjectItem.id}
             key={subjectItem.id}
