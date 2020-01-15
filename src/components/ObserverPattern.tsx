@@ -25,18 +25,25 @@ interface IStateProps {
 
 const ObserverPatternContainer = styled.div`
   font-size: 1.2rem;
-  display: grid;
+  display: flex;
+  flex-direction:row;
   width: 100%;
-  grid-template-columns: repeat(9, 10vw);
-  /* grid-gap: 1.25vw; */
 `;
 
-const SubjectContainer = styled.div`
-  width: 100%;
-  height: 30px;
-  grid-column: -1/1;
-  background-color: green;
+const GroupContainer  = styled.div`
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  margin-left:20px;
+  margin-right:20px;
+  margin-top:20px;
+  align-items:center;
+  >div{
+    width:60%;
+    margin-top:10px;
+  }
 `;
+
 
 const ObserverPattern: React.FC<IProps> = () => {
   // subscribes to changes in values in store
@@ -70,24 +77,29 @@ const ObserverPattern: React.FC<IProps> = () => {
         CREATE OBSERVER
       </button>
       <ObserverPatternContainer>
+        <GroupContainer>
+
         {Object.values(subjects).map(subjectItem => (
           <Subject
-            observers={subjectItem.observers}
-            selected={subjectItem.id === selectedSubjectId}
-            id={subjectItem.id}
-            key={subjectItem.id}
+          observers={subjectItem.observers}
+          selected={subjectItem.id === selectedSubjectId}
+          id={subjectItem.id}
+          key={subjectItem.id}
           />
-        ))}
+          ))}
+          </GroupContainer>
+          <GroupContainer>
 
         {Object.values(observers).map((observerItem, index) => (
           <Observer
-            key={observerItem.id}
-            id={observerItem.id}
-            selected={observerItem.id === selectedObserverId}
-            gridColumnStart={index % 2 ? 1 : 5}
-            gridColumnEnd={index % 2 ? 5 : 9}
+          key={observerItem.id}
+          id={observerItem.id}
+          selected={observerItem.id === selectedObserverId}
+          gridColumnStart={index % 2 ? 1 : 5}
+          gridColumnEnd={index % 2 ? 5 : 9}
           />
-        ))}
+          ))}
+          </GroupContainer>
       </ObserverPatternContainer>
     </div>
   );
