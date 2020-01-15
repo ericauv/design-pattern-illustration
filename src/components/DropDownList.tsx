@@ -14,10 +14,13 @@ interface IListProps {
   left?: string;
 }
 
-const ListContainer = styled.div`
+const ListContainer = styled.div<IListProps>`
+  left: ${props => (props.left ? props.left : '100%')};
+  top: ${props => (props.top ? props.top : 0)};
   position: relative;
   width: 100%;
   height: 100%;
+  background-color: ${props => props.theme.white};
 `;
 const List = styled.ul<IListProps>`
   padding: 0;
@@ -31,7 +34,6 @@ const List = styled.ul<IListProps>`
 const ListItem = styled.li`
   width: 100%;
   list-style: none;
-  background-color: ${props => props.theme.white};
   &:hover {
     background-color: ${props => props.theme.blue};
   }

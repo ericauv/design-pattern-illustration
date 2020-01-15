@@ -10,7 +10,7 @@ const themes = {
   default: {
     darkBlue: '#1755B1',
     blue: '#A5DCF4',
-    white: '#E5F4E3',
+    white: '#F4F4F4',
     yellow: '#FFF07C',
     darkYellow: '#FDE95C'
   }

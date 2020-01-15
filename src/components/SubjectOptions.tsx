@@ -37,9 +37,11 @@ function getNonRegisteredObserversForSubject(
 }
 
 const OptionsContainer = styled.div`
+  left: 100%;
+  top: 0;
   position: absolute;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 `;
 const SubjectOptions: React.FC<ISubjectOptionsProps> = props => {
   const { subjectId } = props;
