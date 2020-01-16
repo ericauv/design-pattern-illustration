@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   IDictionary,
   ObserverClass,
-  SubjectClass,
   IInitialState,
   REGISTER_OBSERVER,
   UNREGISTER_OBSERVER,

@@ -9,23 +9,35 @@ import {
   ISubjectMenuPayload
 } from '../../store/subject-menu-reducer';
 import { useDispatch } from 'react-redux';
-import { MenuItemVariant } from './SubjectTopMenu';
+import { MenuItemVariant } from './MenuItemsList';
+import Arrow from '../Arrow';
 
 export interface IProps {
   label: string;
   variant?: MenuItemVariant;
-  onClickAction: ObserverActionType | MenuActionType | null;
-  onClickActionPayload: IObserverPayload | ISubjectMenuPayload;
+  onClickAction?: ObserverActionType | MenuActionType;
+  onClickActionPayload?: IObserverPayload | ISubjectMenuPayload;
   onFocusAction?: ObserverActionType | MenuActionType;
   onFocusActionPayload?: IObserverPayload | ISubjectMenuPayload;
 }
 
 const MenuItemButtonStyles = styled.button<Partial<IProps>>`
   display: flex;
+  justify-content: space-between;
+  padding-top:10px; 
+   padding-bottom:10px;
   width: 100%;
   height: 100%;
+  font-size:18px;
   color: ${props =>
     props.variant === MenuItemVariant.Delete ? 'red' : 'black'};
+  background: ${props=>props.theme.white};
+  border:none;
+  border-radius: 0px 0px 5px 5px;
+  &:hover{
+    background:${props=>props.theme.blue}
+  }
+
 `;
 const MenuItemButton: React.FC<IProps> = props => {
   const {
@@ -44,7 +56,9 @@ const MenuItemButton: React.FC<IProps> = props => {
       onClick={(e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        dispatch({ type: onClickAction, payload: onClickActionPayload });
+        if(onClickAction){
+          dispatch({ type: onClickAction, payload: onClickActionPayload });
+        }
       }}
       onMouseOver={(e: MouseEvent) => {
         e.stopPropagation();
@@ -62,6 +76,7 @@ const MenuItemButton: React.FC<IProps> = props => {
       }}
     >
       {label}
+      {variant === MenuItemVariant.Parent && <Arrow/>}
     </MenuItemButtonStyles>
   );
 };
