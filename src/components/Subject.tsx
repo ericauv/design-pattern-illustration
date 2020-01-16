@@ -9,7 +9,8 @@ import {
   SELECT_SUBJECT,
   DESELECT_OBSERVER
 } from '../store/observer-reducer';
-import SubjectOptions from './SubjectOptions';
+import SubjectMenu from './subjectMenu/SubjectMenu';
+import { OPEN_SUBJECT_MENU } from '../store/subject-menu-reducer';
 export interface ISubjectProps {
   id: string;
   selected: boolean;
@@ -37,9 +38,9 @@ const SubjectContainer = styled.div<ISubjectContainerProps>`
 const Subject: React.FC<ISubjectProps> = props => {
   const { id, selected, observers } = props;
   const { subject, allObservers }: IStateProps = useSelector(
-    (state: IInitialState) => ({
-      subject: state.subjects[id],
-      allObservers: state.observers
+    ({ observerReducer }: { observerReducer: IInitialState }) => ({
+      subject: observerReducer.subjects[id],
+      allObservers: observerReducer.observers
     })
   );
   const dispatch = useDispatch();
@@ -52,10 +53,11 @@ const Subject: React.FC<ISubjectProps> = props => {
         e.stopPropagation();
         dispatch(SELECT_SUBJECT(id));
         dispatch(DESELECT_OBSERVER());
+        dispatch(OPEN_SUBJECT_MENU(id));
       }}
     >
       {id}
-      {selected && <SubjectOptions subjectId={id} />}
+      {selected && <SubjectMenu subjectId={id} />}
     </SubjectContainer>
   );
 };
