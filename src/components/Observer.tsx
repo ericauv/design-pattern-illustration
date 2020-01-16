@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { SELECT_OBSERVER, DESELECT_SUBJECT } from '../store/observer-reducer';
@@ -7,6 +7,7 @@ export interface IObserverProps {
   gridColumnEnd: number;
   id: string;
   selected: boolean;
+  beingNotified: boolean;
 }
 
 const ObserverContainer = styled.div<Partial<IObserverProps>>`
@@ -17,18 +18,22 @@ const ObserverContainer = styled.div<Partial<IObserverProps>>`
     ${props => props.gridColumnEnd};
   border: ${props => (props.selected ? '1px solid black' : '0px')};
   border-radius: 5px;
+
 `;
 
 const Observer: React.FC<IObserverProps> = props => {
-  const { gridColumnStart, gridColumnEnd, id, selected } = props;
+  const { gridColumnStart, gridColumnEnd, id, selected, beingNotified } = props;
   const dispatch = useDispatch();
+
+  
 
   return (
     <ObserverContainer
-      className="observer"
+      className='observer'
       gridColumnStart={gridColumnStart}
       gridColumnEnd={gridColumnEnd}
       selected={selected}
+      beingNotified={beingNotified}
       onClick={(e: MouseEvent) => {
         // prevent clickEvent from bubbling up to ObserverPattern, which would cause DESELECT_OBSERVER to be dispatched
         e.stopPropagation();

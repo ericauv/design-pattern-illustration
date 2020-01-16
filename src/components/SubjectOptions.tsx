@@ -8,7 +8,8 @@ import {
   IInitialState,
   REGISTER_OBSERVER,
   UNREGISTER_OBSERVER,
-  SELECT_OBSERVER
+  SELECT_OBSERVER,
+  TRY_NOTIFY_OBSERVERS
 } from '../store/observer-reducer';
 import DropDownList from './DropDownList';
 
@@ -73,7 +74,7 @@ const SubjectOptions: React.FC<ISubjectOptionsProps> = props => {
       >
         UNREGISTER
       </DropDownList>
-      <button onClick={() => SubjectClass.notifyObservers(subjectObservers)}>
+      <button onClick={() => dispatch(TRY_NOTIFY_OBSERVERS(subjectId))}>
         Notify Observers
       </button>
     </OptionsContainer>

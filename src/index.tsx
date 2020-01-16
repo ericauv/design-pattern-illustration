@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
-import { store } from './store/index';
+import { configureStore } from './store/index';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider } from 'styled-components';
 const themes = {
@@ -15,6 +15,9 @@ const themes = {
     darkYellow: '#FDE95C'
   }
 };
+
+// initialize redux store
+const store = configureStore();
 ReactDOM.render(
   <Provider store={store}>
     <ThemeProvider theme={themes.default}>
