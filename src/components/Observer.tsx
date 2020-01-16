@@ -18,18 +18,18 @@ const ObserverContainer = styled.div<Partial<IObserverProps>>`
     ${props => props.gridColumnEnd};
   border: ${props => (props.selected ? '1px solid black' : '0px')};
   border-radius: 5px;
-
+  transform: ${props => (props.beingNotified ? `scale(1.1)` : `scale(1)`)};
+  box-shadow: ${props =>
+    props.beingNotified ? `${props.theme.boxShadow} black` : 0};
 `;
 
 const Observer: React.FC<IObserverProps> = props => {
   const { gridColumnStart, gridColumnEnd, id, selected, beingNotified } = props;
   const dispatch = useDispatch();
 
-  
-
   return (
     <ObserverContainer
-      className='observer'
+      className="observer"
       gridColumnStart={gridColumnStart}
       gridColumnEnd={gridColumnEnd}
       selected={selected}

@@ -2,7 +2,7 @@ import { Action, Reducer } from 'redux';
 
 export interface IObserver {
   id: string;
-  beingNotified:boolean;
+  beingNotified: boolean;
 }
 
 export interface IDictionary<T> {
@@ -11,9 +11,9 @@ export interface IDictionary<T> {
 
 export class ObserverClass implements IObserver {
   id: string;
-  beingNotified:boolean;
+  beingNotified: boolean;
   constructor() {
-    this.beingNotified=false;
+    this.beingNotified = false;
     this.id = (
       Date.now().toString(36) +
       Math.random()
@@ -66,19 +66,19 @@ export interface IDispatchAction extends Action {
 
 // Action Types
 export enum ActionType {
-  REGISTER_OBSERVER="REGISTER_OBSERVER",
-  UNREGISTER_OBSERVER="UNREGISTER_OBSERVER",
-  CREATE_OBSERVER="CREATE_OBSERVER",
-  CREATE_SUBJECT="CREATE_SUBJECT",
-  DELETE_OBSERVER="DELETE_OBSERVER",
-  DELETE_SUBJECT="DELETE_SUBJECT",
-  SELECT_OBSERVER="SELECT_OBSERVER",
-  SELECT_SUBJECT="SELECT_SUBJECT",
-  DESELECT_OBSERVER="DESELECT_OBSERVER",
-  DESELECT_SUBJECT="DESELECT_SUBJECT",
-  NOTIFY_OBSERVERS="NOTIFY_OBSERVERS",
-  UNNOTIFY_OBSERVERS="UNNOTIFY_OBSERVERS",
-  TRY_NOTIFY_OBSERVERS="TRY_NOTIFY_OBSERVER"
+  REGISTER_OBSERVER = 'REGISTER_OBSERVER',
+  UNREGISTER_OBSERVER = 'UNREGISTER_OBSERVER',
+  CREATE_OBSERVER = 'CREATE_OBSERVER',
+  CREATE_SUBJECT = 'CREATE_SUBJECT',
+  DELETE_OBSERVER = 'DELETE_OBSERVER',
+  DELETE_SUBJECT = 'DELETE_SUBJECT',
+  SELECT_OBSERVER = 'SELECT_OBSERVER',
+  SELECT_SUBJECT = 'SELECT_SUBJECT',
+  DESELECT_OBSERVER = 'DESELECT_OBSERVER',
+  DESELECT_SUBJECT = 'DESELECT_SUBJECT',
+  NOTIFY_OBSERVERS = 'NOTIFY_OBSERVERS',
+  UNNOTIFY_OBSERVERS = 'UNNOTIFY_OBSERVERS',
+  TRY_NOTIFY_OBSERVERS = 'TRY_NOTIFY_OBSERVER'
 }
 
 function copySubjectFromState(
@@ -114,56 +114,65 @@ function unRegisterObserverFromAllSubjects(
   }
   return updatedSubjects;
 }
-function setObserversBeingNotifiedValue(subject:SubjectClass, setToValue:boolean){
-  const updatedSubject = {...subject};
-  for (const observer in updatedSubject.observers) {
-    if (updatedSubject.observers.hasOwnProperty(observer)) {
-      const element = updatedSubject.observers[observer];
-      element.beingNotified=setToValue;
+function setObserversBeingNotified(
+  state: IInitialState,
+  subjectId: string,
+  setToValue: boolean
+): IDictionary<ObserverClass> {
+  const allObservers = { ...state.observers };
+  if (state.subjects[subjectId]) {
+    const subject = state.subjects[subjectId];
+    for (const observer in subject.observers) {
+      if (allObservers.hasOwnProperty(observer)) {
+        allObservers[observer].beingNotified = setToValue;
+      }
     }
   }
-  return updatedSubject;
+  return allObservers;
 }
 // Reducers
 export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
   state = initialState,
   action
-  ) => {
-    switch (action.type) {
-      case ActionType.NOTIFY_OBSERVERS:{
-        const {subjectId} = action.payload;
-        const updatedSubjectsCollection = {...state.subjects};
-        if(updatedSubjectsCollection[subjectId]){
-          // notify all observers
-          const updatedSubject = setObserversBeingNotifiedValue(updatedSubjectsCollection[subjectId],true);
+) => {
+  switch (action.type) {
+    case ActionType.NOTIFY_OBSERVERS: {
+      const { subjectId } = action.payload;
+      if (state.subjects[subjectId]) {
+        // notify all observers of the subject
+        const updatedObservers = setObserversBeingNotified(
+          state,
+          subjectId,
+          true
+        );
+        console.log('NOTIFIED:', { ...state, observers: updatedObservers });
 
-          updatedSubjectsCollection[updatedSubject.id]= {...updatedSubject};
-        }
-        
-        return{
+        return {
           ...state,
-          subjects:updatedSubjectsCollection
-        }
+          observers: updatedObservers
+        };
+      } else {
+        return { ...state };
       }
-      case ActionType.UNNOTIFY_OBSERVERS:{
-        const {subjectId} = action.payload;
-        const updatedSubjects = {...state.subjects};
-        if(updatedSubjects[subjectId]){
-          const updatedSubject = setObserversBeingNotifiedValue(updatedSubjects[subjectId],false);
-          updatedSubjects[updatedSubject.id]= updatedSubject;
-          console.log(updatedSubject);
-          console.log(updatedSubjects[updatedSubject.id]);
-          
-          updatedSubjects[updatedSubject.id]= updatedSubject;
-          console.log('UNnotified:', updatedSubjects[updatedSubject.id].observers); // TODO UNDERSTAND WHY THIS IS NOT SETTING TO TRUE?!!!!!!!!!!! [has to do with unnotify firing before this is logged??????]
-          console.log('UNnotified:', updatedSubjects); // TODO UNDERSTAND WHY THIS IS NOT SETTING TO TRUE?!!!!!!!!!!! [has to do with unnotify firing before this is logged??????]
-        }
-        console.log('UNnotified:', updatedSubjects);
-        return{
+    }
+    case ActionType.UNNOTIFY_OBSERVERS: {
+      const { subjectId } = action.payload;
+      if (state.subjects[subjectId]) {
+        // notify all observers of the subject
+        const updatedObservers = setObserversBeingNotified(
+          state,
+          subjectId,
+          false
+        );
+        console.log('UNNOTIFIED:', { ...state, observers: updatedObservers });
+        return {
           ...state,
-          subjects:updatedSubjects
-        }
+          observers: updatedObservers
+        };
+      } else {
+        return { ...state };
       }
+    }
     case ActionType.REGISTER_OBSERVER: {
       const { subjectId, observerId } = action.payload;
       const updatedSubject = copySubjectFromState(state, subjectId);
@@ -271,20 +280,19 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
   }
 };
 
+export const NOTIFY_OBSERVERS = (subjectId: string) => ({
+  type: ActionType.NOTIFY_OBSERVERS,
+  payload: { subjectId }
+});
 
-export const NOTIFY_OBSERVERS = (subjectId:string)=>({
-  type:ActionType.NOTIFY_OBSERVERS,
-  payload:{subjectId}
-})
-
-export const TRY_NOTIFY_OBSERVERS = (subjectId:string)=>({
-  type:ActionType.TRY_NOTIFY_OBSERVERS,
-  payload:{subjectId}
-})
-export const UNNOTIFY_OBSERVERS = (subjectId:string)=>({
-  type:ActionType.UNNOTIFY_OBSERVERS,
-  payload:{subjectId}
-})
+export const TRY_NOTIFY_OBSERVERS = (subjectId: string) => ({
+  type: ActionType.TRY_NOTIFY_OBSERVERS,
+  payload: { subjectId }
+});
+export const UNNOTIFY_OBSERVERS = (subjectId: string) => ({
+  type: ActionType.UNNOTIFY_OBSERVERS,
+  payload: { subjectId }
+});
 
 export const REGISTER_OBSERVER = (subjectId: string, observerId: string) => ({
   type: ActionType.REGISTER_OBSERVER,

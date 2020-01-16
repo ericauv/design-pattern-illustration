@@ -12,7 +12,8 @@ const themes = {
     blue: '#A5DCF4',
     white: '#E5F4E3',
     yellow: '#FFF07C',
-    darkYellow: '#FDE95C'
+    darkYellow: '#FDE95C',
+    boxShadow: '1px 1px 1px 1px'
   }
 };
 
