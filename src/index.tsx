@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
-import { store } from './store/index';
+import { configureStore } from './store/index';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider } from 'styled-components';
 const themes = {
@@ -12,9 +12,13 @@ const themes = {
     blue: '#A5DCF4',
     white: '#F4F4F4',
     yellow: '#FFF07C',
-    darkYellow: '#FDE95C'
+    darkYellow: '#FDE95C',
+    boxShadow: '1px 1px 1px 1px'
   }
 };
+
+// initialize redux store
+const store = configureStore();
 ReactDOM.render(
   <Provider store={store}>
     <ThemeProvider theme={themes.default}>

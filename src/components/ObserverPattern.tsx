@@ -60,6 +60,7 @@ const ObserverPattern: React.FC<IProps> = () => {
       selectedSubjectId: state.selectedSubjectId
     };
   });
+  
 
   // dispatches actions to store
   const dispatch = useDispatch();
@@ -97,6 +98,7 @@ const ObserverPattern: React.FC<IProps> = () => {
           selected={observerItem.id === selectedObserverId}
           gridColumnStart={index % 2 ? 1 : 5}
           gridColumnEnd={index % 2 ? 5 : 9}
+          beingNotified={observerItem.beingNotified}
           />
           ))}
           </GroupContainer>
