@@ -11,6 +11,7 @@ import {
   DESELECT_SUBJECT,
   DESELECT_OBSERVER
 } from '../store/observer-reducer';
+import { ISubjectMenuInitialState } from '../store/subject-menu-reducer';
 import Observer from './Observer';
 import Subject from './Subject';
 
@@ -21,6 +22,7 @@ interface IStateProps {
   subjects: IDictionary<SubjectClass>;
   selectedObserverId: string;
   selectedSubjectId: string;
+  subjectMenuSubjectId: string;
 }
 
 const ObserverPatternContainer = styled.div`
@@ -50,28 +52,29 @@ const ObserverPattern: React.FC<IProps> = () => {
     observers,
     subjects,
     selectedObserverId,
-    selectedSubjectId
+    selectedSubjectId,
+    subjectMenuSubjectId
   }: IStateProps = useSelector(
-    ({ observerReducer }: { observerReducer: IInitialState }) => {
-      console.log(observerReducer);
-
+    ({
+      observerReducer,
+      subjectMenuReducer
+    }: {
+      observerReducer: IInitialState;
+      subjectMenuReducer: ISubjectMenuInitialState;
+    }) => {
       return {
         observers: observerReducer.observers,
         subjects: observerReducer.subjects,
         selectedObserverId: observerReducer.selectedObserverId,
-        selectedSubjectId: observerReducer.selectedSubjectId
+        selectedSubjectId: observerReducer.selectedSubjectId,
+        subjectMenuSubjectId: subjectMenuReducer.subjectId
       };
     }
   );
 
   // dispatches actions to store
   const dispatch = useDispatch();
-  console.log({
-    observers,
-    subjects,
-    selectedObserverId,
-    selectedSubjectId
-  });
+  console.log(subjectMenuSubjectId);
 
   return (
     <div
@@ -89,6 +92,7 @@ const ObserverPattern: React.FC<IProps> = () => {
         <GroupContainer>
           {Object.values(subjects).map(subjectItem => (
             <Subject
+              menuIsOpen={subjectItem.id === subjectMenuSubjectId}
               observers={subjectItem.observers}
               selected={subjectItem.id === selectedSubjectId}
               id={subjectItem.id}
