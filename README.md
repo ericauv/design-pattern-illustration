@@ -3,7 +3,6 @@
 This project aims to illustrate common Object Oriented Programming Design Patterns in an interactive and visual manner. The following design patterns will be covered:
 
 - Observer
-- Strategy
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
