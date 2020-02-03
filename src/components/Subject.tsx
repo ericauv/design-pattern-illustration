@@ -28,6 +28,7 @@ interface ISubjectContainerProps {
 }
 
 const SubjectContainer = styled.div<ISubjectContainerProps>`
+  z-index: 2;
   position: relative;
   width: 100%;
   height: 30px;

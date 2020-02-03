@@ -24,20 +24,19 @@ export interface IProps {
 const MenuItemButtonStyles = styled.button<Partial<IProps>>`
   display: flex;
   justify-content: space-between;
-  padding-top:10px; 
-   padding-bottom:10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   width: 100%;
   height: 100%;
-  font-size:18px;
+  font-size: 18px;
   color: ${props =>
     props.variant === MenuItemVariant.Delete ? 'red' : 'black'};
-  background: ${props=>props.theme.white};
-  border:none;
+  background: ${props => props.theme.white};
+  border: none;
   border-radius: 0px 0px 5px 5px;
-  &:hover{
-    background:${props=>props.theme.blue}
+  &:hover {
+    background: ${props => props.theme.blue};
   }
-
 `;
 const MenuItemButton: React.FC<IProps> = props => {
   const {
@@ -56,7 +55,7 @@ const MenuItemButton: React.FC<IProps> = props => {
       onClick={(e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if(onClickAction){
+        if (onClickAction) {
           dispatch({ type: onClickAction, payload: onClickActionPayload });
         }
       }}
@@ -76,7 +75,7 @@ const MenuItemButton: React.FC<IProps> = props => {
       }}
     >
       {label}
-      {variant === MenuItemVariant.Parent && <Arrow/>}
+      {variant === MenuItemVariant.Parent && <Arrow />}
     </MenuItemButtonStyles>
   );
 };

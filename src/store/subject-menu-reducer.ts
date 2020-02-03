@@ -122,7 +122,10 @@ export const UPDATE_SUBJECT_MENU = (
 // Actions for different ActionType DONE
 // Reducers for new actions DONE
 // Corresponding dispatch on subject right click, etc. DONE
-// Refactor SubjectMenu to hold list container, and render different list items for different MenuStates, rather than different components
-// Create Sub Menu Components fully
+// Refactor SubjectMenu to hold list container, and render different list items for different MenuStates, rather than different components DONE
+// Create Sub Menu Components fully DONE
+// Click away from Menu (other than observer) should close menu
+// Click on Observer while in Register observer should register observer
+// CSS for Menu, Menu Item
 // Clean up observer-reducer ... DON"T KEEP OBSERVERS AS CHILDREN OF SUBJECTS, just observerIds
 // Css to make it look *pretty sweet*
