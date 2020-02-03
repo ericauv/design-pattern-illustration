@@ -3,17 +3,15 @@ import {
   IDispatchAction,
   observerReducer
 } from './observer-reducer';
-import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga'
-import notifyObserversSaga from './sagas'
+import { subjectMenuReducer } from './subject-menu-reducer';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import notifyObserversSaga from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
-
-export function configureStore(){
-  const store = createStore(
-    observerReducer,
-    applyMiddleware(sagaMiddleware)
-  );
+const rootReducer = combineReducers({ observerReducer, subjectMenuReducer });
+export function configureStore() {
+  const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
   sagaMiddleware.run(notifyObserversSaga);
   return store;
 }

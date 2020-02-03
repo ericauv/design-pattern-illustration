@@ -145,7 +145,6 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
           subjectId,
           true
         );
-        console.log('NOTIFIED:', { ...state, observers: updatedObservers });
 
         return {
           ...state,
@@ -164,7 +163,6 @@ export const observerReducer: Reducer<IInitialState, IDispatchAction> = (
           subjectId,
           false
         );
-        console.log('UNNOTIFIED:', { ...state, observers: updatedObservers });
         return {
           ...state,
           observers: updatedObservers

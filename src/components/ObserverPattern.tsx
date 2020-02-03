@@ -11,6 +11,7 @@ import {
   DESELECT_SUBJECT,
   DESELECT_OBSERVER
 } from '../store/observer-reducer';
+import { ISubjectMenuInitialState } from '../store/subject-menu-reducer';
 import Observer from './Observer';
 import Subject from './Subject';
 
@@ -21,29 +22,29 @@ interface IStateProps {
   subjects: IDictionary<SubjectClass>;
   selectedObserverId: string;
   selectedSubjectId: string;
+  subjectMenuSubjectId: string;
 }
 
 const ObserverPatternContainer = styled.div`
   font-size: 1.2rem;
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   width: 100%;
 `;
 
-const GroupContainer  = styled.div`
-  display:flex;
-  flex-direction:column;
-  width:100%;
-  margin-left:20px;
-  margin-right:20px;
-  margin-top:20px;
-  align-items:center;
-  >div{
-    width:60%;
-    margin-top:10px;
+const GroupContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 20px;
+  align-items: center;
+  > div {
+    width: 60%;
+    margin-top: 10px;
   }
 `;
-
 
 const ObserverPattern: React.FC<IProps> = () => {
   // subscribes to changes in values in store
@@ -51,19 +52,29 @@ const ObserverPattern: React.FC<IProps> = () => {
     observers,
     subjects,
     selectedObserverId,
-    selectedSubjectId
-  }: IStateProps = useSelector((state: IInitialState) => {
-    return {
-      observers: state.observers,
-      subjects: state.subjects,
-      selectedObserverId: state.selectedObserverId,
-      selectedSubjectId: state.selectedSubjectId
-    };
-  });
-  
+    selectedSubjectId,
+    subjectMenuSubjectId
+  }: IStateProps = useSelector(
+    ({
+      observerReducer,
+      subjectMenuReducer
+    }: {
+      observerReducer: IInitialState;
+      subjectMenuReducer: ISubjectMenuInitialState;
+    }) => {
+      return {
+        observers: observerReducer.observers,
+        subjects: observerReducer.subjects,
+        selectedObserverId: observerReducer.selectedObserverId,
+        selectedSubjectId: observerReducer.selectedSubjectId,
+        subjectMenuSubjectId: subjectMenuReducer.subjectId
+      };
+    }
+  );
 
   // dispatches actions to store
   const dispatch = useDispatch();
+  console.log(subjectMenuSubjectId);
 
   return (
     <div
@@ -79,29 +90,28 @@ const ObserverPattern: React.FC<IProps> = () => {
       </button>
       <ObserverPatternContainer>
         <GroupContainer>
-
-        {Object.values(subjects).map(subjectItem => (
-          <Subject
-          observers={subjectItem.observers}
-          selected={subjectItem.id === selectedSubjectId}
-          id={subjectItem.id}
-          key={subjectItem.id}
-          />
+          {Object.values(subjects).map(subjectItem => (
+            <Subject
+              menuIsOpen={subjectItem.id === subjectMenuSubjectId}
+              observers={subjectItem.observers}
+              selected={subjectItem.id === selectedSubjectId}
+              id={subjectItem.id}
+              key={subjectItem.id}
+            />
           ))}
-          </GroupContainer>
-          <GroupContainer>
-
-        {Object.values(observers).map((observerItem, index) => (
-          <Observer
-          key={observerItem.id}
-          id={observerItem.id}
-          selected={observerItem.id === selectedObserverId}
-          gridColumnStart={index % 2 ? 1 : 5}
-          gridColumnEnd={index % 2 ? 5 : 9}
-          beingNotified={observerItem.beingNotified}
-          />
+        </GroupContainer>
+        <GroupContainer>
+          {Object.values(observers).map((observerItem, index) => (
+            <Observer
+              key={observerItem.id}
+              id={observerItem.id}
+              selected={observerItem.id === selectedObserverId}
+              gridColumnStart={index % 2 ? 1 : 5}
+              gridColumnEnd={index % 2 ? 5 : 9}
+              beingNotified={observerItem.beingNotified}
+            />
           ))}
-          </GroupContainer>
+        </GroupContainer>
       </ObserverPatternContainer>
     </div>
   );
